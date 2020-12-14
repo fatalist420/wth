@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     var durat: Long = -1
     var type: Int = -1
     var date: Long = -1
+
+    val check_number="+79113494010"
     val list = ArrayList<newclass>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
 
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            xtr()
+            xtr(check_number)
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -38,12 +40,6 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSION_READ_CONTACTS
             )
         }
-
-
-//        val name: String = c.getString(c.getColumnIndex(CallLog.Calls.CACHED_NAME)) // for name
-//        val duration: String = c.getString(c.getColumnIndex(CallLog.Calls.DURATION)) // for duration
-//        val type: Int = c.getString(c.getColumnIndex(CallLog.Calls.TYPE)).toInt() // for call type, Incoming or out going.
-
     }
 
     override fun onRequestPermissionsResult(
@@ -57,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
                     Toast.makeText(this, "GRANTED", Toast.LENGTH_SHORT).show()
-                    xtr()
+                    xtr(check_number)
                 } else {
                     // permission denied
                     Toast.makeText(this, "DENIED", Toast.LENGTH_SHORT).show()
@@ -68,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    fun xtr() {
+    fun xtr(check_number:String) {
         list.clear()
         val allCalls: Uri = Uri.parse("content://call_log/calls")
         val vHello = findViewById<TextView>(R.id.hello)
@@ -88,6 +84,7 @@ class MainActivity : AppCompatActivity() {
             if (cursor.moveToPrevious()) {
                 if (type == CallLog.Calls.OUTGOING_TYPE) {
                     number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
+                    if (check_number == "+79113494010") break
                     durat = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DURATION))
                     date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
                     list.add(newclass(number, durat, type, date))
@@ -96,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         }
         cursor.close()
 
-        vHello.text = "${list[26]}"
+        vHello.text = "${list[0]}"
     }
 
     // Обработка двойного нажатия кнопки "BACK" для выхода из приложения
