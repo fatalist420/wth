@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-
 class MainActivity : AppCompatActivity() {
 
     var REQUEST_CODE_PERMISSION_READ_CONTACTS = 0
@@ -21,24 +20,29 @@ class MainActivity : AppCompatActivity() {
     var type: Int = -1
     var date: Long = -1
 
-    val check_number="+79113494010"
-    val list = ArrayList<newclass>()
+    var check_number = "+79113494010"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val vHello = findViewById<TextView>(R.id.hello)//test
+        val eText = findViewById<TextView>(R.id.editTextPhone)//test
+
         val permissionStatus =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
 
-        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            xtr(check_number)
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_CALL_LOG),
-                REQUEST_CODE_PERMISSION_READ_CONTACTS
-            )
+        vHello.setOnClickListener(){
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                check_number= eText.text.toString()//test
+                vHello.text = checkNumber(check_number).toString()//test
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_CALL_LOG),
+                    REQUEST_CODE_PERMISSION_READ_CONTACTS
+                )
+            }
         }
     }
 
@@ -53,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
                     Toast.makeText(this, "GRANTED", Toast.LENGTH_SHORT).show()
-                    xtr(check_number)
+                    checkNumber(check_number)
                 } else {
                     // permission denied
                     Toast.makeText(this, "DENIED", Toast.LENGTH_SHORT).show()
@@ -64,36 +68,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    fun xtr(check_number:String) {
-        list.clear()
-        val allCalls: Uri = Uri.parse("content://call_log/calls")
-        val vHello = findViewById<TextView>(R.id.hello)
+    fun checkNumber(check_number: String, duration: Int = 0): Boolean {
 
+        val allCalls: Uri = Uri.parse("content://call_log/calls")
         val cursor = contentResolver.query(allCalls, null, null, null, null)
 
         (cursor!!.moveToLast())
         type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
-        if (type == CallLog.Calls.OUTGOING_TYPE) {
-            number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
-            durat = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DURATION))
-            date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
-            list.add(newclass(number, durat, type, date))
-        }
-
         for (i in 0..50) {
-            if (cursor.moveToPrevious()) {
-                if (type == CallLog.Calls.OUTGOING_TYPE) {
-                    number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
-                    if (check_number == "+79113494010") break
-                    durat = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DURATION))
-                    date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
-                    list.add(newclass(number, durat, type, date))
-                }
+            if (type == CallLog.Calls.OUTGOING_TYPE) {
+                number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
+                durat = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DURATION))
+                date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
+                if (number == check_number && durat > duration) break
             }
+            if (!cursor.moveToPrevious()) break
         }
         cursor.close()
-
-        vHello.text = "${list[0]}"
+        return number == check_number && durat > duration
     }
 
     // Обработка двойного нажатия кнопки "BACK" для выхода из приложения
