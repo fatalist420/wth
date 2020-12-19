@@ -20,29 +20,21 @@ class MainActivity : AppCompatActivity() {
     var type: Int = -1
     var date: Long = -1
 
-    var check_number = "+79113494010"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val vHello = findViewById<TextView>(R.id.hello)//test
-        val eText = findViewById<TextView>(R.id.editTextPhone)//test
-
         val permissionStatus =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
 
-        vHello.setOnClickListener(){
-            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                check_number= eText.text.toString()//test
-                vHello.text = checkNumber(check_number).toString()//test
-            } else {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.READ_CALL_LOG),
-                    REQUEST_CODE_PERMISSION_READ_CONTACTS
-                )
-            }
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+            TODO()
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_CALL_LOG),
+                REQUEST_CODE_PERMISSION_READ_CONTACTS
+            )
         }
     }
 
@@ -56,10 +48,12 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty()
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
+                    // permission GRANTED
+                    TODO()
                     Toast.makeText(this, "GRANTED", Toast.LENGTH_SHORT).show()
-                    checkNumber(check_number)
                 } else {
-                    // permission denied
+                    // permission DENIED
+                    TODO()
                     Toast.makeText(this, "DENIED", Toast.LENGTH_SHORT).show()
                 }
                 return
