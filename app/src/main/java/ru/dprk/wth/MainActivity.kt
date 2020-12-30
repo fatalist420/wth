@@ -2,6 +2,8 @@ package ru.dprk.wth
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -24,11 +26,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val newhActivity = Intent(this, Login::class.java)
+
         val permissionStatus =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
-
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            TODO()
+            //permission status
+            startActivity(newhActivity)
+            Toast.makeText(this, "StartActivity", Toast.LENGTH_SHORT).show()
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -49,11 +54,9 @@ class MainActivity : AppCompatActivity() {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
                     // permission GRANTED
-                    TODO()
                     Toast.makeText(this, "GRANTED", Toast.LENGTH_SHORT).show()
                 } else {
                     // permission DENIED
-                    TODO()
                     Toast.makeText(this, "DENIED", Toast.LENGTH_SHORT).show()
                 }
                 return
