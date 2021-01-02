@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import ru.dprk.wth.Login.Companion.auth
+import ru.dprk.wth.Login.Companion.db
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,11 +24,13 @@ class MainActivity : AppCompatActivity() {
     var type: Int = -1
     var date: Long = -1
 
+    lateinit var newhActivity: Intent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val newhActivity = Intent(this, Login::class.java)
+        newhActivity = Intent(this, Login::class.java)
 
         val permissionStatus =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
@@ -55,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     // permission GRANTED
                     Toast.makeText(this, "GRANTED", Toast.LENGTH_SHORT).show()
+                    startActivity(newhActivity)
                 } else {
                     // permission DENIED
                     Toast.makeText(this, "DENIED", Toast.LENGTH_SHORT).show()
@@ -91,6 +96,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (backPress + 2000 > System.currentTimeMillis()) {
             super.onBackPressed()
+            auth.signOut()//test
         } else {
             backPress = System.currentTimeMillis()
             Toast.makeText(
