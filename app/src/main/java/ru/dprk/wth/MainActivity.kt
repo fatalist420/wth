@@ -2,21 +2,25 @@ package ru.dprk.wth
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CallLog
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import ru.dprk.wth.Login.Companion.auth
-import ru.dprk.wth.Login.Companion.db
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        lateinit var auth: FirebaseAuth
+        lateinit var db: DatabaseReference
+    }
 
     var REQUEST_CODE_PERMISSION_READ_CONTACTS = 0
     var number: String = ""
@@ -24,20 +28,23 @@ class MainActivity : AppCompatActivity() {
     var type: Int = -1
     var date: Long = -1
 
-    lateinit var newhActivity: Intent
+    private lateinit var loginActivity: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        newhActivity = Intent(this, Login::class.java)
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseDatabase.getInstance().reference
 
+        loginActivity = Intent(this, Login::class.java)
+        //запрос на права доступа истории звонков
         val permissionStatus =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            //permission status
-            startActivity(newhActivity)
-            Toast.makeText(this, "StartActivity", Toast.LENGTH_SHORT).show()
+            //переход на форму входа/регистрации
+            startActivity(loginActivity)
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -59,10 +66,12 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     // permission GRANTED
                     Toast.makeText(this, "GRANTED", Toast.LENGTH_SHORT).show()
-                    startActivity(newhActivity)
+                    //переход на форму входа/регистрации
+                    startActivity(loginActivity)
                 } else {
                     // permission DENIED
                     Toast.makeText(this, "DENIED", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
                 return
             }
@@ -101,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             backPress = System.currentTimeMillis()
             Toast.makeText(
                 baseContext,
-                " Для выхода нажмите кнопку Назад еще раз",
+                " Для выхода нажмите еще раз",
                 Toast.LENGTH_SHORT
             ).show()
         }

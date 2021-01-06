@@ -1,6 +1,5 @@
 package ru.dprk.wth
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -9,20 +8,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import ru.dprk.wth.MainActivity.Companion.auth
+import ru.dprk.wth.MainActivity.Companion.db
+
 
 class Login : AppCompatActivity() {
 
-    companion object {
-        lateinit var auth: FirebaseAuth
-        lateinit var db: DatabaseReference
-    }
-
     private val emailString: String = "@wth.usr"
     private var userNumber: String = ""
-    private var userLogin: String = userNumber + emailString
+    private var userLogin: String = ""
     private var userPassword: String = ""
 
     //test
@@ -32,17 +30,18 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Initialize Firebase Auth
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseDatabase.getInstance().reference
 
+
+        //NOT NULL!!!
         val outlinedTextFieldUserName =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldUserName)
         outlinedTextFieldUserName.editText?.doAfterTextChanged { inputText: Editable? ->
-            userNumber = "$inputText"
-            Log.w("SIGN_IN", userNumber)
+            userNumber = inputText.toString()
+            userLogin = userNumber + emailString
+            Log.w("SIGN_IN", userLogin)
         }
 
+        //NOT NULL!!!
         val outlinedTextFieldUserPassword =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldUserPassword)
         outlinedTextFieldUserPassword.editText?.doAfterTextChanged { inputText: Editable? ->
@@ -70,21 +69,6 @@ class Login : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser: FirebaseUser? = auth.currentUser
         //updateUI(currentUser)
-
-        if (currentUser != null) {
-            val number = currentUser.displayName
-            Toast.makeText(
-                this,
-                "onStart auth.currentUser $number",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-        else{
-            val taskActivity = Intent(this, Task::class.java)
-            startActivity(taskActivity)
-        }
-
-        //read
     }
 
     private fun signIn(email: String, password: String) {
@@ -95,7 +79,6 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     //val currentUser: FirebaseUser? = auth.currentUser
-                    writeUserInfo()
                     //updateUI(currentUser)
                 } else {
                     // If sign in fails, display a message to the user.
@@ -114,6 +97,9 @@ class Login : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "createUserWithEmail:success")
                     val user: FirebaseUser? = auth.currentUser
+                    signIn(email, password)
+                    val userInfo=UserInfo(userWallet)
+                    writeUserInfo(userNumber, userInfo)
                     //updateUI(registerFormInfo)
                 } else {
                     // If sign in fails, display a message to the user.
@@ -128,9 +114,8 @@ class Login : AppCompatActivity() {
             }
     }
 
-    private fun writeUserInfo() {
-        val userInfo = UserInfo(userWallet)
-        db.child("users").child(userNumber).setValue(userInfo)
+    private fun writeUserInfo(userID: String, userInfo: UserInfo) {
+        db.child("users").child(userID).setValue(userInfo)
     }
 
     //для контроля за "users"
