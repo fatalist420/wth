@@ -30,37 +30,54 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-
-
-        //NOT NULL!!!
         val outlinedTextFieldUserName =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldUserName)
         outlinedTextFieldUserName.editText?.doAfterTextChanged { inputText: Editable? ->
             userNumber = inputText.toString()
             userLogin = userNumber + emailString
+            if (userNumber != "" && userNumber.length == 10) {
+                outlinedTextFieldUserName.error = null
+            }
             Log.w("SIGN_IN", userLogin)
         }
 
-        //NOT NULL!!!
         val outlinedTextFieldUserPassword =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldUserPassword)
         outlinedTextFieldUserPassword.editText?.doAfterTextChanged { inputText: Editable? ->
             userPassword = inputText.toString()
+            if (userPassword.length > 5) {
+                outlinedTextFieldUserPassword.error = null
+            } else {
+                outlinedTextFieldUserPassword.error = "Минимум 6 символов"
+            }
             Log.w("SIGN_IN", userPassword)
         }
 
         //Кнопка входа
         val btnSignIn = findViewById<Button>(R.id.btnSignIn)
-        btnSignIn.setOnClickListener() {
-            signIn(userLogin, userPassword)
+        btnSignIn.setOnClickListener {
+            when (false) {
+                userNumber != "", userNumber.length == 10 -> outlinedTextFieldUserName.error =
+                    "Не верный формат"
+                userPassword.length > 5 -> outlinedTextFieldUserPassword.error =
+                    "Минимум 6 символов"
+                else -> {
+                    signIn(userLogin, userPassword)
+                }
+            }
         }
 
         //
         val btnRegister = findViewById<Button>(R.id.btnRegister)
-        btnRegister.setOnClickListener() {
-            createNewUser(userLogin, userPassword)
+        btnRegister.setOnClickListener {
+            if (userPassword.length > 5) {
+                createNewUser(userLogin, userPassword)
+            } else {
+                outlinedTextFieldUserPassword.error = "Минимум 6 символов"
+            }
+
         }
-        //если юзр существует, то войти, если нет, то зарегистрировать
+        //если юзр существует, то войти, если нет, то зарегистрировать и войти
 
     }
 
@@ -96,10 +113,8 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "createUserWithEmail:success")
-                    val user: FirebaseUser? = auth.currentUser
-                    signIn(email, password)
-                    val userInfo=UserInfo(userWallet)
-                    writeUserInfo(userNumber, userInfo)
+                    val currentUser: FirebaseUser? = auth.currentUser
+
                     //updateUI(registerFormInfo)
                 } else {
                     // If sign in fails, display a message to the user.
