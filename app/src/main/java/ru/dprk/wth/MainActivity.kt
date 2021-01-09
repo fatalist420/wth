@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         lateinit var db: DatabaseReference
     }
 
-    var REQUEST_CODE_PERMISSION_READ_CONTACTS = 0
+    private var REQUEST_CODE_PERMISSION_READ_CONTACTS = 0
     var number: String = ""
     var durat: Long = -1
     var type: Int = -1
@@ -44,13 +45,21 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
             //переход на форму входа/регистрации
-            startActivity(loginActivity)
         } else {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.READ_CALL_LOG),
                 REQUEST_CODE_PERMISSION_READ_CONTACTS
             )
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Проверка, вошел ли пользовательв систему
+        val currentUser: FirebaseUser? = auth.currentUser
+        if (currentUser == null) {
+            startActivity(loginActivity)
         }
     }
 
@@ -101,7 +110,6 @@ class MainActivity : AppCompatActivity() {
 
     // Обработка двойного нажатия кнопки "BACK" для выхода из приложения
     private var backPress: Long = 0
-
     override fun onBackPressed() {
         if (backPress + 2000 > System.currentTimeMillis()) {
             super.onBackPressed()

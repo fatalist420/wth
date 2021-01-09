@@ -1,25 +1,19 @@
 package ru.dprk.wth
 
-import android.app.Application
-import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import ru.dprk.wth.MainActivity.Companion.auth
 import ru.dprk.wth.MainActivity.Companion.db
-import kotlin.properties.Delegates
 
 
 class Login : AppCompatActivity() {
@@ -36,6 +30,8 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        val progressWait = findViewById<ProgressBar>(R.id.progressBar)
+
         val outlinedTextFieldUserName =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldUserName)
         outlinedTextFieldUserName.editText?.doAfterTextChanged { inputText: Editable? ->
@@ -44,7 +40,6 @@ class Login : AppCompatActivity() {
             if (userNumber != "" && userNumber.length == 10) {
                 outlinedTextFieldUserName.error = null
             }
-            Log.w("SIGN_IN", userLogin)
         }
 
         val outlinedTextFieldUserPassword =
@@ -54,7 +49,6 @@ class Login : AppCompatActivity() {
             if (userPassword.length > 5) {
                 outlinedTextFieldUserPassword.error = null
             }
-            Log.w("SIGN_IN", userPassword)
         }
 
         val outlinedTextFieldUserWallet =
@@ -66,8 +60,7 @@ class Login : AppCompatActivity() {
             }
         }
 
-        //Кнопка входа
-        val btnSignIn = findViewById<Button>(R.id.btnSignIn)
+        val btnSignIn = findViewById<Button>(R.id.btnSignIn)    //Кнопка входа
         btnSignIn.setOnClickListener {
             when (false) {
                 userNumber != "", userNumber.length == 10 -> outlinedTextFieldUserName.error =
@@ -80,8 +73,7 @@ class Login : AppCompatActivity() {
             }
         }
 
-        //
-        val btnRegister = findViewById<Button>(R.id.btnRegister)
+        val btnRegister = findViewById<Button>(R.id.btnRegister)    //Кнопка регистрации
         btnRegister.setOnClickListener {
             outlinedTextFieldUserWallet.visibility = TextInputLayout.VISIBLE
             when (false) {
@@ -97,35 +89,20 @@ class Login : AppCompatActivity() {
                         .setNegativeButton("Cancel") { _, _ ->
                         }
                         .setPositiveButton("Ok") { _, _ ->
+                            progressWait.visibility = ProgressBar.VISIBLE
                             createNewUser(userLogin, userPassword)
                             val userInfo = UserInfo(userWallet)
                             writeUserInfo(userNumber, userInfo)
                         }
                         .show()
-
-                    Log.d("TAG", "CREATE NEW USER")
                 }
             }
         }
-        //если юзр существует, то войти, если нет, то зарегистрировать и войти
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser: FirebaseUser? = auth.currentUser
-        if (currentUser!=null) {
-            Toast.makeText(this, "auth", Toast.LENGTH_SHORT).show()
-        }
-        //updateUI(currentUser)
     }
 
     private fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(
-                this
-            ) { task ->
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     finish()
                 } else {
@@ -133,9 +110,6 @@ class Login : AppCompatActivity() {
                         .setTitle("Ошибка входа")
                         .setMessage("Проверьте правильность введенных данных или зарегистрируйтесь")
                         .show()
-
-                    Log.w("SIGN_IN", "signUserWithEmail:failure", task.exception)
-                    //updateUI(null)
                 }
             }
     }
@@ -146,22 +120,10 @@ class Login : AppCompatActivity() {
                 this
             ) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("TAG", "createUserWithEmail:success")
-                    val currentUser: FirebaseUser? = auth.currentUser
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w("TAG", "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        this, "Authentication failed.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    //updateUI(currentUser)
+                    finish()
                 }
             }
-        // ...
     }
-
 
     private fun writeUserInfo(userID: String, userInfo: UserInfo) {
         db.child("users").child(userID).setValue(userInfo)
