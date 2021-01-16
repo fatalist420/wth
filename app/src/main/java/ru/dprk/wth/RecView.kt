@@ -5,17 +5,14 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import ru.dprk.wth.MainActivity.Companion.db
 
 
 class RecView : AppCompatActivity() {
 
-    lateinit var firebaseData: ArrayList<FirebaseData>
+    lateinit var firebaseData: ArrayList<TaskInfo>
     lateinit var recyclerView: RecyclerView
-    lateinit var helperAdapter: Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,19 +22,14 @@ class RecView : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         firebaseData = ArrayList()
 
-        db.addListenerForSingleValueEvent(object : ValueEventListener {
+        db.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                firebaseData.clear()
                 for (postSnapshot in dataSnapshot.children) {
-                    //val post = dataSnapshot.child("tasks").value
-                    //val post1 = dataSnapshot.child("tasks/email").value
-                    val data = postSnapshot.child("tasks").getValue(FirebaseData::class.java)
+                    val data = postSnapshot.getValue(TaskInfo::class.java)
                     if (data != null) {
                         firebaseData.add(data)
                     }
-
-
-                    //val post1 = dataSnapshot.child("$phoneNumber/email").value
-                    //Log.w("TAG", "loadPost: $post")
                 }
                 recyclerView.adapter = Adapter(firebaseData, this@RecView)
             }
@@ -48,7 +40,6 @@ class RecView : AppCompatActivity() {
                 // ...
             }
         })
-
 
         }
     }

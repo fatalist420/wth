@@ -141,6 +141,6 @@ class Login : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
         }
-        val addValueEventListener = db.addValueEventListener(postListener)
+        db.addValueEventListener(postListener)
     }
 }
