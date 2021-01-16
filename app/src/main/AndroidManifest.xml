@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wth">
+        <activity android:name=".RecView"></activity>
         <activity android:name=".Task" />
         <activity android:name=".Register" />
         <activity android:name=".Login" />

@@ -14,3 +14,8 @@ data class TaskInfo(
     val Job: String,                                   //Задание при звонке
     val Action: Boolean = false                        //размещение задания неактивного по умолчанию
 )
+
+data class FirebaseData (
+    var userID: String="userID",
+    var job: String="job"
+)

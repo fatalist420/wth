@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     var date: Long = -1
 
     private lateinit var loginActivity: Intent
+    private lateinit var RecView:Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         db = FirebaseDatabase.getInstance().reference
 
         loginActivity = Intent(this, Login::class.java)
+        RecView = Intent(this, ru.dprk.wth.RecView::class.java)
+
         //запрос на права доступа истории звонков
         val permissionStatus =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
@@ -60,6 +63,8 @@ class MainActivity : AppCompatActivity() {
         val currentUser: FirebaseUser? = auth.currentUser
         if (currentUser == null) {
             startActivity(loginActivity)
+        } else{
+            startActivity(RecView)
         }
     }
 
