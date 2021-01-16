@@ -22,10 +22,10 @@ class RecView : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         firebaseData = ArrayList()
 
-        db.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
+        db.addChildEventListener(object : ChildEventListener {
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 firebaseData.clear()
-                for (postSnapshot in dataSnapshot.children) {
+                for (postSnapshot in snapshot.children) {
                     val data = postSnapshot.getValue(TaskInfo::class.java)
                     if (data != null) {
                         firebaseData.add(data)
@@ -34,38 +34,21 @@ class RecView : AppCompatActivity() {
                 recyclerView.adapter = Adapter(firebaseData, this@RecView)
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("TAG", "loadPost:onCancelled", databaseError.toException())
-                // ...
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                //...
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                //...
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                //..
+            }
+
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                //...
             }
         })
-
-        }
     }
-
-//    var adapter: FirebaseRecyclerAdapter<*, *> =
-//        object : FirebaseRecyclerAdapter<FirebaseData?, Adapter.ViewHolder?>(options) {
-//            // ...
-//            override fun onDataChanged() {
-//                // Called each time there is a new data snapshot. You may want to use this method
-//                // to hide a loading spinner or check for the "no documents" state and update your UI.
-//                // ...
-//            }
-//
-//            override fun onError(e: DatabaseError) {
-//                // Called when there is an error getting data. You may want to update
-//                // your UI to display an error message to the user.
-//                // ...
-//            }
-//
-//            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Adapter.ViewHolder {
-//                TOD
-//            }
-//
-//            override fun onBindViewHolder(p0: Adapter.ViewHolder, p1: Int, p2: FirebaseData) {
-//                TOD
-//            }
-//        }
-
-
+}
