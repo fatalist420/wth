@@ -22,8 +22,12 @@ class RecView : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         firebaseData = ArrayList()
 
-        db.addChildEventListener(object : ChildEventListener {
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+        val query = FirebaseDatabase.getInstance()
+            .reference
+            .child("tasks")
+
+        query.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 firebaseData.clear()
                 for (postSnapshot in snapshot.children) {
                     val data = postSnapshot.getValue(TaskInfo::class.java)
@@ -34,20 +38,8 @@ class RecView : AppCompatActivity() {
                 recyclerView.adapter = Adapter(firebaseData, this@RecView)
             }
 
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                //...
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                //...
-            }
-
             override fun onCancelled(error: DatabaseError) {
                 //..
-            }
-
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                //...
             }
         })
     }
