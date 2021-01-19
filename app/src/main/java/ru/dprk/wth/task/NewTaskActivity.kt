@@ -1,12 +1,11 @@
-package ru.dprk.wth
+package ru.dprk.wth.task
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
-import ru.dprk.wth.MainActivity.Companion.db
+import ru.dprk.wth.R
 
 class NewTaskActivity : AppCompatActivity() {
 

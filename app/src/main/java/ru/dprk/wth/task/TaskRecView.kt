@@ -1,16 +1,18 @@
-package ru.dprk.wth
+package ru.dprk.wth.task
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
+import ru.dprk.wth.R
+import ru.dprk.wth.TaskInfo
 
 class RecView : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_rec_view)
+        setContentView(R.layout.activity_task_rec_view)
 
         //добавит загрузку данных виджет
 
@@ -31,7 +33,7 @@ class RecView : AppCompatActivity() {
                         firebaseData.add(data)
                     }
                 }
-                recyclerView.adapter = Adapter(firebaseData, this@RecView)
+                recyclerView.adapter = TaskAdapter(firebaseData, this@RecView)
             }
 
             override fun onCancelled(error: DatabaseError) {
