@@ -15,7 +15,7 @@ class Adapter(private var listArray: ArrayList<TaskInfo>, private var context: C
         private val job: TextView = view.findViewById(R.id.job)
 
         fun bind(listItem: TaskInfo) {
-            userID.text = listItem.userID
+            userID.text = listItem.number
             job.text = listItem.job
         }
     }

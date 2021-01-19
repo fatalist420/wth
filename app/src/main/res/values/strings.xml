@@ -8,4 +8,6 @@
     <string name="hello_world">Hello Round World!</string>
     <string name="prompt_wallet">Wallet</string>
     <string name="error">Error</string>
+    <string name="target_number">Target Number</string>
+    <string name="job">Job</string>
 </resources>

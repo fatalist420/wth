@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CallLog
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -28,9 +29,9 @@ class MainActivity : AppCompatActivity() {
     var durat: Long = -1
     var type: Int = -1
     var date: Long = -1
+    lateinit var userID: String
 
     private lateinit var loginActivity: Intent
-    private lateinit var RecView:Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +41,9 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseDatabase.getInstance().reference
 
+        userID = auth.currentUser?.displayName.toString()
+
         loginActivity = Intent(this, Login::class.java)
-        RecView = Intent(this, ru.dprk.wth.RecView::class.java)
 
         //запрос на права доступа истории звонков
         val permissionStatus =
@@ -63,8 +65,9 @@ class MainActivity : AppCompatActivity() {
         val currentUser: FirebaseUser? = auth.currentUser
         if (currentUser == null) {
             startActivity(loginActivity)
-        } else{
-            startActivity(RecView)
+        }else{
+            writeUserAction()
+            Log.d("USERID", userID)
         }
     }
 
@@ -127,6 +130,16 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun writeUserAction(){
+        val userAction = UserAction(userID)
+        db.child("userAction").child(userID).setValue(userAction)
+            .addOnCompleteListener (this) { task ->
+                if (task.isSuccessful){
+                    Log.d("WRITE USER ACTION", "SUCCESS")
+                }
+            }
     }
 }
 

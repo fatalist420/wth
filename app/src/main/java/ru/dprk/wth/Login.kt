@@ -5,23 +5,28 @@ import android.text.Editable
 import android.util.Log
 import android.widget.Button
 import android.widget.ProgressBar
+import kotlin.coroutines.*
+import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.UserProfileChangeRequest
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import ru.dprk.wth.MainActivity.Companion.auth
 import ru.dprk.wth.MainActivity.Companion.db
-
 
 class Login : AppCompatActivity() {
 
     private val emailString: String = "@wth.usr"
-    private var userNumber: String = ""
+    private var userID: String = ""
     private var userLogin: String = ""
     private var userPassword: String = ""
+
+    private lateinit var progressWait: ProgressBar
 
     //test
     private var userWallet: String = "4455258556558554"
@@ -30,14 +35,14 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val progressWait = findViewById<ProgressBar>(R.id.progressBar)
+        progressWait = findViewById<ProgressBar>(R.id.progressBar)
 
         val outlinedTextFieldUserName =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldUserName)
         outlinedTextFieldUserName.editText?.doAfterTextChanged { inputText: Editable? ->
-            userNumber = inputText.toString()
-            userLogin = userNumber + emailString
-            if (userNumber != "" && userNumber.length == 10) {
+            userID = inputText.toString()
+            userLogin = userID + emailString
+            if (userID != "" && userID.length == 10) {
                 outlinedTextFieldUserName.error = null
             }
         }
@@ -63,7 +68,7 @@ class Login : AppCompatActivity() {
         val btnSignIn = findViewById<Button>(R.id.btnSignIn)    //Кнопка входа
         btnSignIn.setOnClickListener {
             when (false) {
-                userNumber != "", userNumber.length == 10 -> outlinedTextFieldUserName.error =
+                userID != "", userID.length == 10 -> outlinedTextFieldUserName.error =
                     "Не верный формат"
                 userPassword.length > 5 -> outlinedTextFieldUserPassword.error =
                     "Минимум 6 символов"
@@ -77,7 +82,7 @@ class Login : AppCompatActivity() {
         btnRegister.setOnClickListener {
             outlinedTextFieldUserWallet.visibility = TextInputLayout.VISIBLE
             when (false) {
-                userNumber != "", userNumber.length == 10 -> outlinedTextFieldUserName.error =
+                userID != "", userID.length == 10 -> outlinedTextFieldUserName.error =
                     "Не верный формат"
                 userPassword.length > 5 -> outlinedTextFieldUserPassword.error =
                     "Минимум 6 символов"
@@ -91,8 +96,6 @@ class Login : AppCompatActivity() {
                         .setPositiveButton("Ok") { _, _ ->
                             progressWait.visibility = ProgressBar.VISIBLE
                             createNewUser(userLogin, userPassword)
-                            val userInfo = UserInfo(userWallet)
-                            writeUserInfo(userNumber, userInfo)
                         }
                         .show()
                 }
@@ -101,11 +104,13 @@ class Login : AppCompatActivity() {
     }
 
     private fun signIn(email: String, password: String) {
+        progressWait.visibility = ProgressBar.VISIBLE
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     finish()
                 } else {
+                    progressWait.visibility = ProgressBar.INVISIBLE
                     MaterialAlertDialogBuilder(this)
                         .setTitle("Ошибка входа")
                         .setMessage("Проверьте правильность введенных данных или зарегистрируйтесь")
@@ -120,27 +125,36 @@ class Login : AppCompatActivity() {
                 this
             ) { task ->
                 if (task.isSuccessful) {
-                    finish()
+                    Log.d("CREATE NEW USER", "SUCCESS")
+                    updateProfile()
                 }
             }
     }
 
     private fun writeUserInfo(userID: String, userInfo: UserInfo) {
         db.child("users").child(userID).setValue(userInfo)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d("WRITE USER INFO", "SUCCESS")
+                    finish()
+                }
+            }
     }
 
-    //для контроля за "users"
-    private fun readUserInfo() {
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val post = snapshot.child("users").child(userNumber).value
-                Log.w("TAG", "loadPost: $post")
-            }
+    private fun updateProfile() {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(userID)
+            .build()
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+        auth.currentUser?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("UPDATE PROFILE", "User profile updated.")
+                    val userInfo = UserInfo(userWallet)
+                    writeUserInfo(userID, userInfo)
+                } else {
+                    Log.d("UPDATE PROFILE", "NOT")
+                }
             }
-        }
-        db.addValueEventListener(postListener)
     }
 }

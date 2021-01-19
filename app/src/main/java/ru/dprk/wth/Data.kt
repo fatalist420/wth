@@ -2,12 +2,28 @@ package ru.dprk.wth
 
 
 data class UserInfo(
-    val Wallet: String,                                     //номер яндекс кошелька
+    val wallet: String,                                     //номер яндекс кошелька
     val FirstConnection: Long = System.currentTimeMillis(), //дата регистрации
     val Total: Int = 0                                      //начальный счет пользователя
 )
 
-data class TaskInfo (
+data class TaskInfo(
     var userID: String? = null,
-    var job: String? = null
+    var job: String? = null,
+    var number: String? = null,
+    var price: Int? = null,
+    var action: Boolean? = false,
+    var count: Int? = 0,
+    var dateCreate: Long? = System.currentTimeMillis(),
+    var progress: Int? = 0
+)
+
+data class UserAction(
+    var userID: String? = null,
+    val lastConnection: Long = System.currentTimeMillis()
+)
+
+data class TaskLog(
+    var userID: String? = null,
+    var timeAction:Long = System.currentTimeMillis()
 )
