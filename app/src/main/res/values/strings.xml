@@ -10,4 +10,8 @@
     <string name="error">Error</string>
     <string name="target_number">Target Number</string>
     <string name="job">Job</string>
+    <string name="text_label_1">label 1</string>
+    <string name="text_label_2">label 2</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -5,17 +5,11 @@ import android.text.Editable
 import android.util.Log
 import android.widget.Button
 import android.widget.ProgressBar
-import kotlin.coroutines.*
-import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import ru.dprk.wth.MainActivity.Companion.auth
 import ru.dprk.wth.MainActivity.Companion.db
 

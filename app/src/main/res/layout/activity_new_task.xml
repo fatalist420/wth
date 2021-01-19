@@ -17,7 +17,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/outlinedTextFieldJob"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:theme="@style/Theme.Wth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"

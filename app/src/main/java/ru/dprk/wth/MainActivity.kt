@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var userID: String
 
     private lateinit var loginActivity: Intent
+    private lateinit var navi: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         userID = auth.currentUser?.displayName.toString()
 
         loginActivity = Intent(this, Login::class.java)
+        navi = Intent(this, TestActivity::class.java)
 
         //запрос на права доступа истории звонков
         val permissionStatus =
@@ -65,7 +67,8 @@ class MainActivity : AppCompatActivity() {
         val currentUser: FirebaseUser? = auth.currentUser
         if (currentUser == null) {
             startActivity(loginActivity)
-        }else{
+        } else {
+            startActivity(navi)
             writeUserAction()
             Log.d("USERID", userID)
         }
@@ -132,11 +135,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun writeUserAction(){
+    private fun writeUserAction() {
         val userAction = UserAction(userID)
         db.child("userAction").child(userID).setValue(userAction)
-            .addOnCompleteListener (this) { task ->
-                if (task.isSuccessful){
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
                     Log.d("WRITE USER ACTION", "SUCCESS")
                 }
             }
