@@ -15,14 +15,14 @@ class TestActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.page_1 -> {
                     loadFragment(OneFragment.newInstance())
-                    return@OnNavigationItemSelectedListener true
+                    true
                 }
-//                R.id.page_2 -> {
-//                    loadFragment(DashboardFragment.newInstance())
-//                    return@OnNavigationItemSelectedListener true
-//                }
+                R.id.page_2 -> {
+                    loadFragment(TwoFragment.newInstance())
+                    true
+                }
+                else -> false
             }
-            false
         }
 
     private fun loadFragment(fragment: Fragment) {
@@ -30,12 +30,12 @@ class TestActivity : AppCompatActivity() {
         ft.replace(R.id.fl_content, fragment)
         ft.commit()
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
 
-        val navigation = findViewById<View>(R.id.navigation) as BottomNavigationView
+        val navigation = findViewById<BottomNavigationView>(R.id.navigation)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
     }
 }
