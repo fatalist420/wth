@@ -37,5 +37,7 @@ class TestActivity : AppCompatActivity() {
 
         val navigation = findViewById<BottomNavigationView>(R.id.navigation)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        navigation.selectedItemId = R.id.page_1
     }
 }
