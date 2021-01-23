@@ -14,4 +14,8 @@
     <string name="text_label_2">label 2</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fab_content_desc">fab_string</string>
+    <string name="target_count">target_count</string>
+    <string name="target_price">target price</string>
+    <string name="create_task">create task</string>
 </resources>

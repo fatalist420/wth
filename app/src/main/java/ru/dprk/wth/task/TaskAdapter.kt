@@ -1,6 +1,5 @@
 package ru.dprk.wth.task
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.dprk.wth.R
 import ru.dprk.wth.TaskInfo
 
-class TaskAdapter(private var listArray: ArrayList<TaskInfo>, private var context: Context) :
+class TaskAdapter(private var listArray: ArrayList<TaskInfo>) :
     RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -23,7 +22,7 @@ class TaskAdapter(private var listArray: ArrayList<TaskInfo>, private var contex
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(parent.context)
         return ViewHolder(inflater.inflate(R.layout.item_task_layout, parent, false))
     }
 

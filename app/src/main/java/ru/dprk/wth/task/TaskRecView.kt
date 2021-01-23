@@ -8,7 +8,7 @@ import com.google.firebase.database.*
 import ru.dprk.wth.R
 import ru.dprk.wth.TaskInfo
 
-class RecView : AppCompatActivity() {
+class TaskRecView : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,7 @@ class RecView : AppCompatActivity() {
                         firebaseData.add(data)
                     }
                 }
-                recyclerView.adapter = TaskAdapter(firebaseData, this@RecView)
+                recyclerView.adapter = TaskAdapter(firebaseData)
             }
 
             override fun onCancelled(error: DatabaseError) {

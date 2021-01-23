@@ -17,7 +17,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/outlinedTextFieldJob"
-            android:theme="@style/Theme.Wth"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_weight="1"
-            android:hint="@string/target_number"
+            android:hint="@string/target_count"
             app:boxStrokeColor="@color/design_default_color_primary"
             app:counterEnabled="true"
             app:errorEnabled="true">
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_weight="1"
-            android:hint="@string/target_number"
+            android:hint="@string/target_price"
             app:boxStrokeColor="@color/design_default_color_primary"
             app:counterEnabled="true"
             app:errorEnabled="true">
@@ -116,6 +116,15 @@
                 android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button_create_new_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_task"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linerHorizontal" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

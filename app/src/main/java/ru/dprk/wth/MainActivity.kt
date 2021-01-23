@@ -16,12 +16,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import ru.dprk.wth.task.TaskRecView
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
         lateinit var auth: FirebaseAuth
         lateinit var db: DatabaseReference
+        lateinit var userID: String
     }
 
     private var REQUEST_CODE_PERMISSION_READ_CONTACTS = 0
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     var durat: Long = -1
     var type: Int = -1
     var date: Long = -1
-    lateinit var userID: String
+
 
     private lateinit var loginActivity: Intent
     private lateinit var navi: Intent
@@ -69,6 +71,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(loginActivity)
         } else {
             startActivity(navi)
+                //startActivity(Intent(this, TaskRecView::class.java))
             writeUserAction()
             Log.d("USERID", userID)
         }
