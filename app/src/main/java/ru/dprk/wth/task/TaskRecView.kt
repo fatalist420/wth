@@ -33,7 +33,7 @@ class TaskRecView : AppCompatActivity() {
                         firebaseData.add(data)
                     }
                 }
-                recyclerView.adapter = TaskAdapter(firebaseData)
+                recyclerView.adapter = TaskAdapter(firebaseData, baseContext)
             }
 
             override fun onCancelled(error: DatabaseError) {

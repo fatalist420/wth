@@ -3,9 +3,11 @@ package ru.dprk.wth
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,10 +31,13 @@ class TwoFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_two, container, false)
 
         val firebaseData: ArrayList<TaskInfo> = ArrayList()
+        val progressBar = rootView.findViewById<ProgressBar>(R.id.progressBarFragmentTwo)
         val recyclerView: RecyclerView = rootView.findViewById(R.id.rec_view)
         val query = FirebaseDatabase.getInstance()
             .reference
             .child("tasks")
+            .orderByChild("action")
+            .equalTo(true) //только подтвержденные задания
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
@@ -43,18 +48,20 @@ class TwoFragment : Fragment() {
                     val data = postSnapshot.getValue(TaskInfo::class.java)
                     if (data != null) {
                         firebaseData.add(data)
+                        recyclerView.adapter = TaskAdapter(firebaseData, context!!)
+                        progressBar.visibility = ProgressBar.INVISIBLE
                     }
                 }
-                recyclerView.adapter = TaskAdapter(firebaseData)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                //..
+                Log.d("CANCELED", "ERROR")
             }
         })
+
         val extendedFab = rootView.findViewById<ExtendedFloatingActionButton>(R.id.extendedFab)
         extendedFab.setOnClickListener {
-           startActivity(Intent(activity, NewTaskActivity::class.java))
+            startActivity(Intent(activity, NewTaskActivity::class.java))
         }
 
         return rootView

@@ -17,7 +17,7 @@ class NewTaskActivity : AppCompatActivity() {
 
     private var targetNumber: String = ""
     private var targetJob: String = ""
-    private var targetCount: String = ""
+    private var targetCount: Int = 0
     private var targetPrice: Int = 0
 
     //private val userID = "9118011356"
@@ -48,8 +48,8 @@ class NewTaskActivity : AppCompatActivity() {
         val outlinedTextFieldTargetCount =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldTargetCount)
         outlinedTextFieldTargetCount.editText?.doAfterTextChanged { inputText: Editable? ->
-            targetCount = inputText.toString()
-            if (targetCount != "") {
+            targetCount = inputText.toString().toInt()
+            if (targetCount != 0) {
                 outlinedTextFieldTargetCount.error = null
             }
         }
@@ -69,7 +69,7 @@ class NewTaskActivity : AppCompatActivity() {
                 targetJob != "" -> outlinedTextFieldJob.error = "Поле не может быть пустым"
                 targetNumber != "", targetNumber.length == 10 -> outlinedTextFieldTargetNumber.error =
                     "Не верный формат"
-                targetCount != "" -> outlinedTextFieldTargetCount.error =
+                targetCount != 0 -> outlinedTextFieldTargetCount.error =
                     "Поле не может быть пустым"
                 targetPrice != 0 -> outlinedTextFieldTargetPrice.error =
                     "Поле не может быть пустым"
@@ -85,18 +85,18 @@ class NewTaskActivity : AppCompatActivity() {
 //    }
 
     private fun newTask() {
-        val key: String? = MainActivity.db.child("tasks").push().key
-        Log.d("KEY", key!!)
-        val newTask = TaskInfo(userID, targetJob, targetNumber, targetPrice)
-        val userlog = TaskLog(userID)
+        val taskID: String? = MainActivity.db.child("tasks").push().key
+        Log.d("KEY", taskID!!)
+        val newTask = TaskInfo(taskID, userID, targetJob, targetNumber, targetCount)
+        val userLog = TaskLog(userID)
 
         val map = HashMap<String, Any>()
-        map["/tasks/$key"] = newTask
-        map["/taskslog/$key"] = userlog
+        map["/tasks/$taskID"] = newTask
+        map["/taskslog/$taskID"] = userLog
 
         MainActivity.db.updateChildren(map)
             .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful){
+                if (task.isSuccessful) {
                     finish()
                 }
             }

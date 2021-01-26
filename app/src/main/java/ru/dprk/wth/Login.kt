@@ -29,7 +29,7 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        progressWait = findViewById<ProgressBar>(R.id.progressBar)
+        progressWait = findViewById(R.id.progressBar)
 
         val outlinedTextFieldUserName =
             findViewById<TextInputLayout>(R.id.outlinedTextFieldUserName)

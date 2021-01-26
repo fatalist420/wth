@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".task.TaskRecView">
 
+    <ProgressBar
+        android:id="@+id/progressBarFragmentTwo"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/extendedFab"
         android:layout_width="wrap_content"

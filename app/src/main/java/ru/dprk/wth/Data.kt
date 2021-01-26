@@ -8,12 +8,13 @@ data class UserInfo(
 )
 
 data class TaskInfo(
+    var taskID :String? =null,
     var userID: String? = null,
     var job: String? = null,
     var number: String? = null,
+    var count: Int? = 0,
     var price: Int? = null,
     var action: Boolean? = false,
-    var count: Int? = 0,
     var dateCreate: Long? = System.currentTimeMillis(),
     var progress: Int? = 0
 )
